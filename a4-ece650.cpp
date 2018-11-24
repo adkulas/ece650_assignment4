@@ -1,5 +1,7 @@
 // main.cpp:
+#include <minisat/core/SolverTypes.h>
 #include <minisat/core/Solver.h>
+
 
 #include <iostream>
 
@@ -24,9 +26,9 @@ int main() {
     if (sat) {
         std::clog << "SAT\n"
                   << "Model found:\n";
-        std::clog << "A := " << (solver.modelValue(A) == l_True) << '\n';
-        std::clog << "B := " << (solver.modelValue(B) == l_True) << '\n';
-        std::clog << "C := " << (solver.modelValue(C) == l_True) << '\n';
+        std::clog << "A := " << (solver.modelValue(A) == Minisat::l_True) << '\n';
+        std::clog << "B := " << (solver.modelValue(B) == Minisat::l_True) << '\n';
+        std::clog << "C := " << (solver.modelValue(C) == Minisat::l_True) << '\n';
     } else {
         std::clog << "UNSAT\n";
         return 1;
