@@ -3,8 +3,8 @@
 #include <minisat/core/Solver.h>
 #include <vector>
 #include <chrono>
-
 #include <iostream>
+#include "a4-vertexcover.hpp"
 
 // void init_variables() {
 //     for (int r = 0; r < rows; r++) {
