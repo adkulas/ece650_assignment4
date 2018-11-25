@@ -2,38 +2,50 @@
 #include <minisat/core/SolverTypes.h>
 #include <minisat/core/Solver.h>
 #include <vector>
+#include <chrono>
 
 #include <iostream>
 
-const int rows = 5;      // this is i or |v| or n
-const int columns = 2;   // this is k or vertex cover length
-Minisat::Solver solver;
-std::vector< std::pair<int,int> > edges{ std::make_pair(0,4), 
-                                         std::make_pair(4,1),
-                                         std::make_pair(0,3),
-                                         std::make_pair(3,4),
-                                         std::make_pair(3,2),
-                                         std::make_pair(1,3)
-                                         };
+// void init_variables() {
+//     for (int r = 0; r < rows; r++) {
+//         for (int c = 0; c < columns; c++) {
+//             auto var = solver.newVar();
+//             std::cout << "r: " << r << " c: " << c << " var: " << var << std::endl;
+//         }
+//     }
+// }
+
+
 
 Minisat::Var toVar(int row, int column) {
+    int columns = 2;
     return row * columns + column;
 }
 
-void init_variables() {
+int main() {
+    
+    const int rows = 5;      // this is i or |v| or n
+    const int columns = 2;   // this is k or vertex cover length
+    Minisat::Solver solver;
+    std::vector< std::pair<int,int> > edges{ std::make_pair(0,4), 
+                                            std::make_pair(4,1),
+                                            std::make_pair(0,3),
+                                            std::make_pair(3,4),
+                                            std::make_pair(3,2),
+                                            std::make_pair(1,3)
+                                            };
+
+
+
+
+    // Create variables
+    // init_variables();
     for (int r = 0; r < rows; r++) {
         for (int c = 0; c < columns; c++) {
             auto var = solver.newVar();
             std::cout << "r: " << r << " c: " << c << " var: " << var << std::endl;
         }
     }
-}
-
-int main() {
-    
-    // Create variables
-    init_variables();
-
 
     // Create the clauses
     
@@ -88,7 +100,17 @@ int main() {
         }
     std::cout << "num clauses= " << solver.nClauses() << std::endl;
 
+    auto start = std::chrono::system_clock::now();
+    std::cout << "start timer" << std::endl;
+
+
     auto sat = solver.solve();
+
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> diff = end-start;
+    std::cout << diff.count() << std::endl;
+
+
     if (sat) {
         std::cout << "SAT\n" << "Model Found:" << std::endl;
         for (int r = 0; r < rows; r++) {
