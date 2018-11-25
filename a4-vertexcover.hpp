@@ -18,7 +18,7 @@ private:
     void add_clause_every_edge_covered(Minisat::Solver& solver, int k);
 
     bool solve(Minisat::Solver& solver, int k);
-
+    std::vector<int> get_path(Minisat::Solver& solver, int k);
 
 public:
     VertexCover ( int v = 0 );
