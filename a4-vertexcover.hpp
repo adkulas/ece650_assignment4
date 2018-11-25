@@ -8,6 +8,7 @@
 class VertexCover {
 private:
     int vertices;
+    int k;
     std::vector< std::pair<int,int> > edges;
     Minisat::Solver solver;
 

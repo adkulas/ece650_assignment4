@@ -80,10 +80,10 @@ void VertexCover::add_clause_every_edge_covered() {
     // Every edge is incident to at least one vertex
     //----------------------------------------
     for ( auto& e : edges) {
-        Minisat::vec<Minisat::Lit> literals; 
-        for (int k = 0; k < columns; k++) {
-            literals.push(Minisat::mkLit(toVar(e.first, k)));
-            literals.push(Minisat::mkLit(toVar(e.second, k)));
+        Minisat::vec<Minisat::Lit> literals;
+        for (int i = 0; i < k; i++) {
+            literals.push(Minisat::mkLit(toVar(e.first, i)));
+            literals.push(Minisat::mkLit(toVar(e.second, i)));
             }
         solver.addClause(literals);
         }
