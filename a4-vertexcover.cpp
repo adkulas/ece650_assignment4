@@ -2,6 +2,7 @@
 #include <vector>
 #include <climits>
 #include <algorithm>
+#include <chrono>
 #include "a4-vertexcover.hpp"
 #include <minisat/core/SolverTypes.h>
 #include <minisat/core/Solver.h>
@@ -107,7 +108,7 @@ bool VertexCover::solve(Minisat::Solver& solver, int k) {
     add_clause_vertex_only_once(solver, k);
     add_clause_one_per_cover_pos(solver, k);
     add_clause_every_edge_covered(solver, k);
-    // std::cout << solver.nClauses() << std::endl;
+    std::clog << " Num Clauses=" << solver.nClauses();
 
     auto sat = solver.solve();
     
@@ -157,8 +158,7 @@ void VertexCover::find_minimum() {
     int low = 0;
     int high = vertices;
     int mid;
-    
-    
+        
     int results[vertices];  //0 is UNSAT, 1 is SAT, -1 is undefined where index is k or vertex cover length
     std::vector<int> result_paths[vertices];
     std::fill_n(results, vertices, -1);
@@ -166,9 +166,13 @@ void VertexCover::find_minimum() {
     while (low <= high) {
         mid = (high+low)/2;
 
-        // std::clog << "Trying K=" << mid <<std::endl;
+        std::clog << "Trying K=" << mid;
         Minisat::Solver solver;
+        auto start = std::chrono::system_clock::now();
         results[mid] = solve(solver, mid);
+        auto end = std::chrono::system_clock::now();
+        std::chrono::duration<double> diff = end-start;
+        std::clog << " Result: " << results[mid] << " Duration=" << diff.count() << std::endl;
 
         if (results[mid]) {
             result_paths[mid] = get_path(solver, mid);
@@ -177,13 +181,13 @@ void VertexCover::find_minimum() {
         // If SAT and result[k-1] are UNSAT, the minimum is found
         if (results[mid] == 1 && results[mid-1] == 0 && mid != 0) {
             print_vector(result_paths[mid]);
-            return;
+            break;
         }
 
         // If UNSAT and result[k+1] are SAT, the minimum is found
         if (results[mid] == 0 && results[mid+1] == 1 && mid != vertices) {
             print_vector(result_paths[mid+1]);
-            return;
+            break;
         }
         
         if (results[mid]) {
@@ -193,5 +197,24 @@ void VertexCover::find_minimum() {
             low = mid + 1;
         }
     }
+
+    // Linear Search
+    std::fill_n(results, vertices, -1);
+
+    for (int i=0; i <=vertices; i++) {
+        Minisat::Solver solver;
+        std::clog << "Trying K=" << i;
+        auto start = std::chrono::system_clock::now();
+        results[i] = solve(solver, i);
+        auto end = std::chrono::system_clock::now();
+        std::chrono::duration<double> diff = end-start;
+        std::clog << " Result: " << results[i] << " Duration=" << diff.count() << std::endl;
+        if (results[i]) {
+            result_paths[i] = get_path(solver, i);
+            print_vector(result_paths[i]);
+            return;
+        } 
+    }
+
     std::cerr << "Error: UNSAT" << std::endl;
 }
