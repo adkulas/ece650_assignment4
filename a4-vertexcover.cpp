@@ -193,8 +193,4 @@ void VertexCover::find_minimum() {
         }
     }
     std::cerr << "Error: UNSAT" << std::endl;
-
-    for (int i=0; i<vertices; i++) {
-        std::cout << results[i] << std::endl;
-    }
 }
