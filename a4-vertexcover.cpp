@@ -166,6 +166,7 @@ void VertexCover::find_minimum() {
     while (low <= high) {
         mid = (high+low)/2;
 
+        // std::clog << "Trying K=" << mid <<std::endl;
         Minisat::Solver solver;
         results[mid] = solve(solver, mid);
 
