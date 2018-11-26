@@ -125,6 +125,7 @@ std::vector<int> VertexCover::get_path(Minisat::Solver& solver, int k) {
             }
         }      
     }
+    std::sort(path.begin(), path.end());
     return path;
 }
 
@@ -144,23 +145,26 @@ void VertexCover::add_edges(std::vector< std::pair<int,int> > e) {
 
 
 void VertexCover::find_minimum() {
+    if (edges.empty()) {
+        std::cerr << "Error: No Edges Entered to Graph" << std::endl;
+        return;
+    }
+    
     // -----------------------------------
     // Finds the minimum vertex cover and prints path
     // Uses Binary search to find minimum
     // -----------------------------------
-
     int low = 0;
     int high = vertices;
     int mid;
     
     
-    int results[vertices];  //-1 is UNSAT, 1 is SAT, 0 is undefined where index is k or vertex cover length
+    int results[vertices];  //0 is UNSAT, 1 is SAT, -1 is undefined where index is k or vertex cover length
     std::vector<int> result_paths[vertices];
     std::fill_n(results, vertices, -1);
 
     while (low <= high) {
         mid = (high+low)/2;
-        // std::cout << mid << std::endl;
 
         Minisat::Solver solver;
         results[mid] = solve(solver, mid);
@@ -171,21 +175,13 @@ void VertexCover::find_minimum() {
           
         // If SAT and result[k-1] are UNSAT, the minimum is found
         if (results[mid] == 1 && results[mid-1] == 0 && mid != 0) {
-            // std::cout << "PATH: " << std::endl;
-            for (auto v : result_paths[mid]) {
-                std::cout << v << " ";
-            }
-            std::cout << std::endl;
+            print_vector(result_paths[mid]);
             return;
         }
 
         // If UNSAT and result[k+1] are SAT, the minimum is found
         if (results[mid] == 0 && results[mid+1] == 1 && mid != vertices) {
-            // std::cout << "PATH: " << std::endl;
-            for (auto v : result_paths[mid+1]) {
-                std::cout << v << " ";
-            }
-            std::cout << std::endl;
+            print_vector(result_paths[mid+1]);
             return;
         }
         
@@ -196,10 +192,9 @@ void VertexCover::find_minimum() {
             low = mid + 1;
         }
     }
-    std::cout << "UNSAT" << std::endl;
+    std::cerr << "Error: UNSAT" << std::endl;
 
-    for (int i = 0; i <= vertices+1; i++) {
-        Minisat::Solver solver;
-        solve(solver, i);
+    for (int i=0; i<vertices; i++) {
+        std::cout << results[i] << std::endl;
     }
 }

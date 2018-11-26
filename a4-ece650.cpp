@@ -3,7 +3,6 @@
 #include <minisat/core/Solver.h>
 #include <regex>
 #include <vector>
-#include <chrono>
 #include <iostream>
 #include "a4-vertexcover.hpp"
 
@@ -51,7 +50,7 @@ int main() {
             
             case 'V': case 'v':
                 std::cin >> vertices;
-                std::cout << "V " << vertices << std::endl;    
+                // std::cout << "V " << vertices << std::endl;    
                 // Create a new graph
                 if (vertices >= 0) {
                     delete v_cover;
@@ -66,7 +65,7 @@ int main() {
             
             case 'E': case 'e':
                 std::cin >> edges_input;
-                std::cout << "E " << edges_input << std::endl;
+                // std::cout << "E " << edges_input << std::endl;
                 v_cover->add_edges( parse(edges_input) );
                 v_cover->find_minimum();
 
